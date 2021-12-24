@@ -1,8 +1,7 @@
+from fastack import Fastack
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
 from mongoengine import ValidationError, connect, disconnect_all
-
-from fastack import Fastack
 
 
 def handle_validation_error(request: Request, exc: ValidationError):
@@ -12,7 +11,10 @@ def handle_validation_error(request: Request, exc: ValidationError):
 
 def setup(app: Fastack):
     def on_startup():
-        url = app.state.settings.MONGODB_URI
+        url = getattr(app.state.settings, "MONGODB_URI", None)
+        if not url:
+            raise RuntimeError("MONGODB_URI is not set")
+
         connect(host=url)
 
     def on_shutdown():
