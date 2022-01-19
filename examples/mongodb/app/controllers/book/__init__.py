@@ -1,7 +1,7 @@
 from typing import List
 
 from app.models import Book
-from fastack import CRUDController
+from fastack import ModelController
 from fastapi import Response, status
 from pydantic import BaseModel, constr
 
@@ -11,7 +11,7 @@ class BodyBookModel(BaseModel):
     status: Book.Status = Book.Status.DRAFT
 
 
-class BookController(CRUDController):
+class BookController(ModelController):
     def retrieve(self, id: str) -> Response:
         book: Book = Book.objects(pk=id).first()
         if not book:
